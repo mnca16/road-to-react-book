@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-
-
 const list = [
   {
     title: 'React',
@@ -20,18 +18,30 @@ const list = [
   },
 ];
 
-function App() {
-  return (
+const App = () => (
     <div>
       <h1>My Hacker Stories</h1>
 
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text"/>
+      <Search />
+
       <hr />
-      {/* {render the list} */}
-      <ul>
-        {list.map(function (item) {
-          return (
+      
+      <List />
+
+    </div>
+);
+
+const Search = () => (
+    <div>
+    <label htmlFor="search">Search: </label>
+    <input id="search" type="text"/>
+    </div>
+);
+
+const List = () => (
+    <div>
+     <ul>
+        {list.map((item) => (
           <li key={item.objectID} >
             <span>
               <a href='{item.url}'>{item.title}</a>
@@ -40,11 +50,9 @@ function App() {
             <span>{item.num_comments}</span>
             <span>{item.points}</span>
             </li>
-          );
-        })}
-      </ul>
+      ))}
+    </ul>
     </div>
-    );   
-}
+);
 
 export default App;
