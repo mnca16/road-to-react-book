@@ -1,7 +1,12 @@
 import * as React from "react";
+/*
 
+This part of my code goes in the app component
+ <p>My use Ref without the DOM</p>
+      <Counter />
+
+*/
 //UseRef hook without the DOM
-
 const Counter = () => {
   const hasClickedButton = React.useRef(false);
   const [count, setCount] = React.useState(0);
@@ -30,5 +35,7 @@ const Counter = () => {
     </div>
   );
 };
+
+//React Ref as intance variable
 
 export { Counter };

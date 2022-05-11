@@ -89,9 +89,6 @@ const App = () => {
       <hr />
       <List list={searchedStories} onRemoveItem={handleRemoveStory} />
       <hr />
-
-      <p>My use Ref without the DOM</p>
-      <Counter />
     </div>
   );
 };
