@@ -1,4 +1,5 @@
 import * as React from "react";
+import PromisesPractice from "./Lessons/Lesson1-7/PromisesPractice";
 import ReusableCompBotton from "./Lessons/Lesson1-6/ReusableCompBotton";
 import DropDownApp from "./Lessons/Lesson1-6/DropDownApp";
 import { Counter } from "./Lessons/Lesson1-6/UseRefHook/useRef";
@@ -88,7 +89,11 @@ const App = () => {
 
       <hr />
       <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+
       <hr />
+      {/*Promises Practice*/}
+
+      <PromisesPractice></PromisesPractice>
     </div>
   );
 };
