@@ -1,8 +1,10 @@
 import * as React from "react";
+import FakeAPI from "./Lessons/Lesson1-7/FakeAPIJS";
 import PromisesPractice from "./Lessons/Lesson1-7/PromisesPractice";
 import ReusableCompBotton from "./Lessons/Lesson1-6/ReusableCompBotton";
 import DropDownApp from "./Lessons/Lesson1-6/DropDownApp";
 import { Counter } from "./Lessons/Lesson1-6/UseRefHook/useRef";
+import FakeAPIJS from "./Lessons/Lesson1-7/FakeAPIJS";
 
 //Renamed the array of objects (stories) to initialStories.
 //And took it out of the App function in order to manipulate the state inside
@@ -25,6 +27,11 @@ const initialStories = [
   },
 ];
 
+const getAsyncStories = () =>
+  new Promise((resolve) =>
+    setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
+  );
+
 //Custom hook used in the app component
 const useStorageState = (key, initialState) => {
   //This was  the lifted state up to the closest common parent component (App), and then
@@ -46,8 +53,28 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
 
   //This state manipulates the the list of stories in order to remove the titles
-  const [stories, setStories] = React.useState(initialStories);
+  //We use a promise (getAsyncStories) in order to simulate fetching the stories
+  const [stories, setStories] = React.useState([]);
   console.log(`stories state: ${stories}`);
+
+  //This state help us with the conditional rendering... Where we show
+  //the user a "loading..." feedback that I'll use on the useEffect hook
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  //This state we'll help us to catch an error if start getting data from
+  //a remote API
+  const [isError, setIsError] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+
+    getAsyncStories()
+      .then((result) => {
+        setStories(result.data.stories);
+        setIsLoading(false);
+      })
+      .catch(() => setIsError(true));
+  }, []);
 
   //
   const handleRemoveStory = (item) => {
@@ -72,6 +99,12 @@ const App = () => {
     story.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  //Early return (to show the user the loading feedback)
+  //Which we use later as a conditional rendering with JSX
+  // if (isLoading) {
+  //   return <p>Loading ...</p>;
+  // }
+
   return (
     <div>
       <h1>My Hacker Stories</h1>
@@ -88,12 +121,23 @@ const App = () => {
       </InputWithLabel>
 
       <hr />
-      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+
+      {isError && <p>Something went wrong ...</p>}
+
+      {isLoading ? (
+        <p>Loading ... </p>
+      ) : (
+        <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+      )}
 
       <hr />
       {/*Promises Practice*/}
 
       <PromisesPractice></PromisesPractice>
+
+      <hr />
+
+      <FakeAPIJS></FakeAPIJS>
     </div>
   );
 };
