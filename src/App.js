@@ -1,5 +1,4 @@
 import * as React from "react";
-import FakeAPI from "./Lessons/Lesson1-7/FakeAPIJS";
 import PromisesPractice from "./Lessons/Lesson1-7/PromisesPractice";
 import ReusableCompBotton from "./Lessons/Lesson1-6/ReusableCompBotton";
 import DropDownApp from "./Lessons/Lesson1-6/DropDownApp";
@@ -137,7 +136,7 @@ const App = () => {
 
       <hr />
 
-      <FakeAPIJS></FakeAPIJS>
+      {/*<FakeAPIJS></FakeAPIJS>*/}
     </div>
   );
 };

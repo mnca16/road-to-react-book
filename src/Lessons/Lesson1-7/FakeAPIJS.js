@@ -28,28 +28,46 @@ let users = {
   },
 };
 
-//Retrieve data, this is a pseudo API request with Object.value() method (this is sync)
-const getUsers = () =>
-  //Async example with a promise
-  Promise.resolve(Object.values(users));
-
-//usage (1) with the method
-getUsers().then((result) => {
-  console.log(result);
-});
-
-//usage (2) with asycn method
-const onclickHandler = () => {
-  const doGetUSers = async () => {
-    const result = await getUsers();
-    console.log(result);
-  };
-  //Just calling the function... Is this a good practice?
-  doGetUSers();
-};
-
 const FakeAPIJS = () => {
-  return <button onClick={onclickHandler}>Fake data</button>;
+  //Retrieve data, this is a pseudo API request with Object.value() method (this is sync)
+  const getUsers = () =>
+    //Async example with a promise, the longer promise version enable us to handle errors
+    new Promise((resolve, reject) => {
+      if (!users) {
+        return setTimeout(() => reject(new Error("Users not found")), 250);
+      }
+      resolve(Object.values(users));
+    });
+
+  //usage (1) with the method
+  getUsers()
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  //usage (2) with asycn method
+  const onclickHandler = () => {
+    const doGetUSers = async () => {
+      try {
+        const result = await getUsers();
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    //Just calling the function... Is this a good practice?
+    return doGetUSers;
+  };
+  return (
+    <>
+      <button onClick={onclickHandler}>Fake data</button>
+      {onclickHandler}
+      <></>
+    </>
+  );
 };
 
 export default FakeAPIJS;
