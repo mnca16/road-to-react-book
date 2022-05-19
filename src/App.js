@@ -1,4 +1,5 @@
 import * as React from "react";
+import ConditionalIf from "./Lessons/Lesson1-7/ConditionalR/ConditionalIf";
 import PromisesPractice from "./Lessons/Lesson1-7/PromisesPractice";
 import ReusableCompBotton from "./Lessons/Lesson1-6/ReusableCompBotton";
 import DropDownApp from "./Lessons/Lesson1-6/DropDownApp";
@@ -53,6 +54,7 @@ const App = () => {
 
   //This state manipulates the the list of stories in order to remove the titles
   //We use a promise (getAsyncStories) in order to simulate fetching the stories
+  //That's is why we initiate the state with an empty array
   const [stories, setStories] = React.useState([]);
   console.log(`stories state: ${stories}`);
 
@@ -64,6 +66,9 @@ const App = () => {
   //a remote API
   const [isError, setIsError] = React.useState(false);
 
+  //This use effect we called our getAsyncStories() function, which is
+  //a promise that contains our list of stories.
+  //We resolve our promise with the .then() method
   React.useEffect(() => {
     setIsLoading(true);
 
@@ -137,6 +142,10 @@ const App = () => {
       <hr />
 
       {/*<FakeAPIJS></FakeAPIJS>*/}
+
+      <hr />
+      <h1>Conditioanl Rendering Practice.</h1>
+      <ConditionalIf />
     </div>
   );
 };

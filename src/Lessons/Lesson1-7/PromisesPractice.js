@@ -14,6 +14,13 @@ import React from "react";
 //and the third one is an object.
 //Syntax getCurrentPosition(success, error, options)
 
+//Async/await, is only used in functions, and changes it internally and
+//Immidiatly returns a promise.
+//On expresions you add async after the name of the function
+//On declarations you add async before the function word
+//After asych you use await infront of the promise call inside of the fucntion
+//Error handling, tru catch
+
 const PromisesPractice = () => {
   //This function gets the user position, creates a new promise with two
   //parameters but it just used one
@@ -44,25 +51,33 @@ const PromisesPractice = () => {
 
   //Final function, this function combine the two previous functions,
   //mocking asycn data, using the .then method
-  const trackUserHandler = () => {
-    let positionData;
-    getPosition()
-      .then((posData) => {
-        positionData = posData;
-        return setTimer(2000);
-      })
-      .catch((err) => {
-        console.log(err);
-        return "on we go...";
-      })
-      .then((data) => {
-        console.log(data, positionData);
-      });
+  const trackUserHandler = async () => {
+    let posData;
+    let timerData;
+    try {
+      posData = await getPosition();
+      timerData = await setTimer(2000);
+    } catch (error) {
+      console.log(`this is the error: ${error}`);
+      console.log(error);
+    }
+    console.log(timerData, posData);
+    // .then((posData) => {
+    //   positionData = posData;
+    //   return setTimer(2000);
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    //   return "on we go...";
+    // })
+    // .then((data) => {
+    //   console.log(data, positionData);
+    // });
 
-    setTimer(1000).then(() => {
-      console.log("Timer done!");
-    });
-    console.log("Getting position...");
+    // setTimer(1000).then(() => {
+    //   console.log("Timer done!");
+    // });
+    // console.log("Getting position...");
   };
 
   return <button onClick={trackUserHandler}> Click </button>;
