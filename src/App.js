@@ -1,5 +1,5 @@
 import * as React from "react";
-import ConditionalIf from "./Lessons/Lesson1-7/ConditionalR/ConditionalIf";
+import ConditionalIfElse from "./Lessons/Lesson1-7/ConditionalR/ConditionalIfElse";
 import PromisesPractice from "./Lessons/Lesson1-7/PromisesPractice";
 import ReusableCompBotton from "./Lessons/Lesson1-6/ReusableCompBotton";
 import DropDownApp from "./Lessons/Lesson1-6/DropDownApp";
@@ -145,7 +145,7 @@ const App = () => {
 
       <hr />
       <h1>Conditioanl Rendering Practice.</h1>
-      <ConditionalIf />
+      <ConditionalIfElse />
     </div>
   );
 };
