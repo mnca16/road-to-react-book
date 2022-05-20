@@ -1,10 +1,10 @@
 import * as React from "react";
 import ConditionalIfElse from "./Lessons/Lesson1-7/ConditionalR/ConditionalIfElse";
-import PromisesPractice from "./Lessons/Lesson1-7/PromisesPractice";
+import PromisesPractice from "./Lessons/Lesson1-7/AsyncData/PromisesPractice";
 import ReusableCompBotton from "./Lessons/Lesson1-6/ReusableCompBotton";
 import DropDownApp from "./Lessons/Lesson1-6/DropDownApp";
 import { Counter } from "./Lessons/Lesson1-6/UseRefHook/useRef";
-import FakeAPIJS from "./Lessons/Lesson1-7/FakeAPIJS";
+import FakeAPIJS from "./Lessons/Lesson1-7/AsyncData/FakeAPIJS";
 
 //Renamed the array of objects (stories) to initialStories.
 //And took it out of the App function in order to manipulate the state inside

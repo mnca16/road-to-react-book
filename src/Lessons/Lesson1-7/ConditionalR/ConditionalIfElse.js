@@ -14,7 +14,7 @@ let users = [
   },
 ];
 
-users = null;
+users = undefined;
 
 const ConditionalIfElse = () => {
   return (
