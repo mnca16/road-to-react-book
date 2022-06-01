@@ -2,29 +2,32 @@ import * as React from "react";
 
 //Renamed the array of objects (stories) to initialStories.
 //And took it out of the App function in order to manipulate the state inside
-const initialStories = [
-  {
-    title: "React",
-    url: "https://react.js.org/",
-    author: "Jordan Walke",
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: "Redux",
-    url: "https://redux.js.org/",
-    author: "Dan Abramov, Adrew Clark",
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
 
-const getAsyncStories = () =>
-  new Promise((resolve) =>
-    setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
-  );
+//Variable with the fake API
+// const initialStories = [
+//   {
+//     title: "React",
+//     url: "https://react.js.org/",
+//     author: "Jordan Walke",
+//     num_comments: 3,
+//     points: 4,
+//     objectID: 0,
+//   },
+//   {
+//     title: "Redux",
+//     url: "https://redux.js.org/",
+//     author: "Dan Abramov, Adrew Clark",
+//     num_comments: 2,
+//     points: 5,
+//     objectID: 1,
+//   },
+// ];
+
+//Fake API which is made with a promise
+// const getAsyncStories = () =>
+//   new Promise((resolve) =>
+//     setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
+//   );
 
 //Custom hook used in the app component
 const useStorageState = (key, initialState) => {
@@ -77,6 +80,9 @@ const storiesReducer = (state, action) => {
       throw new Error();
   }
 };
+
+//Variable that stores the API
+const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=React";
 
 const App = () => {
   //UseStorageState (Custom Hook) which will keep the component's state
