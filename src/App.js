@@ -1,36 +1,7 @@
 import * as React from "react";
 
-//Renamed the array of objects (stories) to initialStories.
-//And took it out of the App function in order to manipulate the state inside
-
-//Variable with the fake API
-// const initialStories = [
-//   {
-//     title: "React",
-//     url: "https://react.js.org/",
-//     author: "Jordan Walke",
-//     num_comments: 3,
-//     points: 4,
-//     objectID: 0,
-//   },
-//   {
-//     title: "Redux",
-//     url: "https://redux.js.org/",
-//     author: "Dan Abramov, Adrew Clark",
-//     num_comments: 2,
-//     points: 5,
-//     objectID: 1,
-//   },
-// ];
-
-//Fake API which is made with a promise
-// const getAsyncStories = () =>
-//   new Promise((resolve) =>
-//     setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
-//   );
-
 //Custom hook used in the app component
-const useStorageState = (key, initialState) => {
+const useSemiPersistentState = (key, initialState) => {
   //This was  the lifted state up to the closest common parent component (App), and then
   //passed down the state that comes from the input field as a prop (with the handlerSeach function)
   const [value, setValue] = React.useState(
@@ -82,37 +53,28 @@ const storiesReducer = (state, action) => {
 };
 
 //Variable that stores the API
-const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=React";
+const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const App = () => {
-  //UseStorageState (Custom Hook) which will keep the component's state
+  //UseSemiPersistentState (Custom Hook) which will keep the component's state
   //in sync with the browser's local storage.
-  const [searchTerm, setSearchTerm] = useStorageState("search", "React");
+  const [searchTerm, setSearchTerm] = useSemiPersistentState("search", "React");
 
-  //This state manipulates the the list of stories in order to remove the titles
-  //We use a promise (getAsyncStories) in order to simulate fetching the stories
-  //That's is why we initiate the state with an empty array
-  //Now we're having a use reducer state that manages multuple states at the
-  //same time:
-  //2nd:
-  //This state help us with the conditional rendering... Where we show
-  //the user a "loading..." feedback that I'll use on the useEffect hook
-  //3rd:
-  //This state we'll help us to catch an error if start getting data from
-  //a remote API
+  //UseReducer hook, which manage multiple states
   const [stories, dispatchStories] = React.useReducer(storiesReducer, {
     data: [],
     isLoading: false,
     isError: false,
   });
 
-  //This use effect we called our getAsyncStories() function, which is
-  //a promise that contains our list of stories.
-  //We resolve our promise with the .then() method
   React.useEffect(() => {
+    //This if statement helps to convert the client fetching data to
+    //server-side fetching data
+    if (!searchTerm) return;
+
     dispatchStories({ type: "STORIES_FETCH_INIT" });
 
-    fetch(`${API_ENDPOINT}`)
+    fetch(`${API_ENDPOINT}${searchTerm}`)
       .then((response) => response.json())
       .then((result) => {
         dispatchStories({
@@ -121,17 +83,7 @@ const App = () => {
         });
       })
       .catch(() => dispatchStories({ type: "STORIES_FETCH_FAILURE" }));
-  }, []);
-
-  //   getAsyncStories()
-  //     .then((result) => {
-  //       dispatchStories({
-  //         type: "STORIES_FETCH_SUCCESS",
-  //         payload: result.data.stories,
-  //       });
-  //     })
-  //     .catch(() => dispatchStories({ type: "STORIES_FETCH_FAILURE" }));
-  // }, []);
+  }, [searchTerm]);
 
   //
   const handleRemoveStory = (item) => {
@@ -146,20 +98,6 @@ const App = () => {
     setSearchTerm(event.target.value);
   };
 
-  //This variable filters our list (array of objects) when the user changes the state by typing
-  //information on the input field
-  //*The 'stories' variable read in the filter method is now setup with the initial value from
-  //the stories state*
-  const searchedStories = stories.data.filter((story) =>
-    story.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  //Early return (to show the user the loading feedback)
-  //Which we use later as a conditional rendering with JSX
-  // if (isLoading) {
-  //   return <p>Loading ...</p>;
-  // }
-
   return (
     <div>
       <h1>My Hacker Stories</h1>
@@ -172,7 +110,7 @@ const App = () => {
         isFocused
         onInputChange={handleSearch}
       >
-        Search: whats going on?
+        Search:
       </InputWithLabel>
 
       <hr />
@@ -182,7 +120,7 @@ const App = () => {
       {stories.isLoading ? (
         <p>Loading ... </p>
       ) : (
-        <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+        <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
     </div>
   );
