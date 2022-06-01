@@ -1,9 +1,4 @@
 import * as React from "react";
-import PromisesPractice from "./Lessons/Lesson1-7/PromisesPractice";
-import ReusableCompBotton from "./Lessons/Lesson1-6/ReusableCompBotton";
-import DropDownApp from "./Lessons/Lesson1-6/DropDownApp";
-import { Counter } from "./Lessons/Lesson1-6/UseRefHook/useRef";
-import FakeAPIJS from "./Lessons/Lesson1-7/FakeAPIJS";
 
 //Renamed the array of objects (stories) to initialStories.
 //And took it out of the App function in order to manipulate the state inside
@@ -46,6 +41,43 @@ const useStorageState = (key, initialState) => {
   return [value, setValue];
 };
 
+//Use reducer function in order to manage the state
+//Global variables
+const storiesReducer = (state, action) => {
+  console.log(state);
+  switch (action.type) {
+    case "STORIES_FETCH_INIT":
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    case "STORIES_FETCH_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload,
+      };
+    case "STORIES_FETCH_FAILURE":
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
+    case "REMOVE_STORY":
+      return {
+        ...state,
+        data: state.data.filter(
+          (story) => action.payload.objectID !== story.objectID
+        ),
+      };
+
+    default:
+      throw new Error();
+  }
+};
+
 const App = () => {
   //UseStorageState (Custom Hook) which will keep the component's state
   //in sync with the browser's local storage.
@@ -53,48 +85,55 @@ const App = () => {
 
   //This state manipulates the the list of stories in order to remove the titles
   //We use a promise (getAsyncStories) in order to simulate fetching the stories
-  const [stories, setStories] = React.useState([]);
-  console.log(`stories state: ${stories}`);
-
+  //That's is why we initiate the state with an empty array
+  //Now we're having a use reducer state that manages multuple states at the
+  //same time:
+  //2nd:
   //This state help us with the conditional rendering... Where we show
   //the user a "loading..." feedback that I'll use on the useEffect hook
-  const [isLoading, setIsLoading] = React.useState(false);
-
+  //3rd:
   //This state we'll help us to catch an error if start getting data from
   //a remote API
-  const [isError, setIsError] = React.useState(false);
+  const [stories, dispatchStories] = React.useReducer(storiesReducer, {
+    data: [],
+    isLoading: false,
+    isError: false,
+  });
 
+  //This use effect we called our getAsyncStories() function, which is
+  //a promise that contains our list of stories.
+  //We resolve our promise with the .then() method
   React.useEffect(() => {
-    setIsLoading(true);
+    dispatchStories({ type: "STORIES_FETCH_INIT" });
 
     getAsyncStories()
       .then((result) => {
-        setStories(result.data.stories);
-        setIsLoading(false);
+        dispatchStories({
+          type: "STORIES_FETCH_SUCCESS",
+          payload: result.data.stories,
+        });
       })
-      .catch(() => setIsError(true));
+      .catch(() => dispatchStories({ type: "STORIES_FETCH_FAILURE" }));
   }, []);
 
   //
   const handleRemoveStory = (item) => {
-    console.log(`These are the arguments from the handleRemoveStory ${item}`);
-    const newStories = stories.filter(
-      (story) => item.objectID !== story.objectID
-    );
-    setStories(newStories);
+    dispatchStories({
+      type: "SET_STORIES",
+      payload: item,
+    });
   };
 
   //Function that passes down the state to our Search component
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
-    console.log(event.target.value);
   };
 
   //This variable filters our list (array of objects) when the user changes the state by typing
   //information on the input field
   //*The 'stories' variable read in the filter method is now setup with the initial value from
   //the stories state*
-  const searchedStories = stories.filter((story) =>
+  const searchedStories = stories.data.filter((story) =>
     story.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -121,22 +160,13 @@ const App = () => {
 
       <hr />
 
-      {isError && <p>Something went wrong ...</p>}
+      {stories.isError && <p>Something went wrong ...</p>}
 
-      {isLoading ? (
+      {stories.isLoading ? (
         <p>Loading ... </p>
       ) : (
         <List list={searchedStories} onRemoveItem={handleRemoveStory} />
       )}
-
-      <hr />
-      {/*Promises Practice*/}
-
-      <PromisesPractice></PromisesPractice>
-
-      <hr />
-
-      {/*<FakeAPIJS></FakeAPIJS>*/}
     </div>
   );
 };
